@@ -15,14 +15,32 @@ fun main() {
         }
     }
 
-    fun part2(input: List<String>): Int {
-        return input.size
+    fun buildVoltage(numbers: List<Char>, size: Int): Long {
+        val stack = ArrayDeque<Int>()
+        var removals = 0
+        val maxRemovals = numbers.size - size
+
+        for (digit in numbers.map { it.digitToInt() }) {
+            while (stack.isNotEmpty() && stack.last() < digit && removals < maxRemovals) {
+                stack.removeLast()
+                removals += 1
+            }
+            stack.add(digit)
+        }
+
+        return stack.take(size).joinToString("").toLong()
     }
+
+    fun part2(input: List<String>): Long = input.sumOf { buildVoltage(it.toList(), 12) }
 
     val input = readInput("Day03")
 
     val test1 = readInput("Day03_test")
     check(part1(test1) == 357)
 
+    val test2 = readInput("Day03_test")
+    check(part2(test2) == 3121910778619)
+
     part1(input).println()
+    part2(input).println()
 }
